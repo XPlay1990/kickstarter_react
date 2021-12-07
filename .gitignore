@@ -21,3 +21,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Project exclude paths
+/node_modules/
+
+.vscode
+.idea
+
+src/secretConfig.ts
+# Project exclude paths
+/.next/

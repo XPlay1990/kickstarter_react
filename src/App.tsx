@@ -1,26 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
 import './App.css';
+import {Container, createTheme, CssBaseline, Paper, responsiveFontSizes, Theme, useMediaQuery} from "@mui/material";
+import {ThemeProvider} from "@mui/system";
+import Header from "./components/Header";
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import Overview from "./pages/Overview";
+import NotFound from "./pages/error/NotFound";
+import {FORBIDDEN_URL, IS_DARK_MODE} from "./config/AppConstants";
+import Forbidden from "./pages/error/Forbidden";
+import Show from "./pages/campaigns/Show";
+import New from "./pages/campaigns/New";
+import Interact from "./pages/campaigns/Interact";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const [isDarkMode, setIsDarkMode] = React.useState(localStorage.getItem(IS_DARK_MODE) || prefersDarkMode.toString());
+
+    let theme: Theme = createTheme({
+        palette: {
+            mode: (isDarkMode === 'false') ? 'light' : 'dark', // mediaquery on dark theme
+            // primary: {main: blue[500]},
+            // secondary: red,
+        },
+    });
+    theme = responsiveFontSizes(theme);
+
+    // useEffect(() => {
+    //     setIsDarkMode(prefersDarkMode.toString())
+    // }, [prefersDarkMode])
+
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.style.setProperty("--root-link-color", 'hsl(210,100%,50%)')
+            document.documentElement.style.setProperty("--root-visited-link-color", 'hsl(210,40%,50%)')
+        } else {
+            document.documentElement.style.setProperty("--root-link-color", '')
+            document.documentElement.style.setProperty("--root-visited-link-color", '')
+        }
+    }, [isDarkMode])
+
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}/>
+            <Container>
+                <Paper style={{borderRadius: "10px", minHeight: "70vh", padding: "10px"}}>
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<Overview/>}/>
+                            <Route path="/campaigns/:address/interact" element={<Interact/>}/>
+                            <Route path="/campaigns/:address" element={<Show/>}/>
+                            <Route path="/campaigns/new" element={<New/>}/>
+                            <Route path={FORBIDDEN_URL} element={<Forbidden/>}/>
+                            <Route element={<NotFound/>}/>
+                        </Routes>
+                    </BrowserRouter>
+                </Paper>
+            </Container>
+        </ThemeProvider>
+    )
+        ;
 }
 
 export default App;
