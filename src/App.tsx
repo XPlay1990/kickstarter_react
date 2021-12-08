@@ -44,7 +44,7 @@ function App() {
             <BrowserRouter>
                 <CssBaseline/>
                 <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}/>
-                <Container maxWidth={"xl"}>
+                <Container style={{maxWidth: "80%"}}>
                     <Paper style={{borderRadius: "10px", minHeight: "70vh", padding: "10px"}}>
                         <Routes>
                             <Route path="/" element={<Overview/>}/>
