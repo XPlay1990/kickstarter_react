@@ -1,12 +1,25 @@
 import React, {useEffect, useState} from "react"
 import Campaign from "../../ethereum/Campaign";
-import {Button, CardContent, CardHeader, Grid, Typography} from "@mui/material";
+import {
+    Button,
+    CardContent,
+    CardHeader,
+    Grid,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@mui/material";
 import Card from "@mui/material/Card";
 import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
 import {useNavigate, useParams} from "react-router-dom";
-import {Paid} from "@mui/icons-material";
 import {APP_CAMPAIGN_INTERACT} from "../../config/AppConstants";
+import ethereumLogo from "../../resources/coin-logos/eth-logo.png"
 
 function Show() {
     const navigate = useNavigate()
@@ -43,13 +56,14 @@ function Show() {
                 requestsCount: summary[2],
                 contributorsCount: summary[3],
                 manager: summary[4],
+                name: summary[5],
             })
         })
 
         getAllRequests(campaign).then(requests => setCampaignRequests(requests))
     }, [params])
 
-    function renderRequestSummary() {
+    function renderCampaignSummary() {
         if (!campaignSummary) {
             return null
         }
@@ -58,32 +72,32 @@ function Show() {
             {
                 header: campaignSummary.address,
                 meta: "Contract address of this Campaign",
-                description: "The address of the contract on the Ethereum network."
+                link: "The address of the contract on the Ethereum network."
             },
             {
                 header: campaignSummary.manager,
                 meta: "Address of the manager",
-                description: "The manager that created this campaign. Can create Requests and finalize them if enough funders approved."
+                link: "The manager that created this campaign. Can create Requests and finalize them if enough funders approved."
             },
             {
                 header: campaignSummary.minimumContribution,
                 meta: "Minimum contribution (wei)",
-                description: "Minimum contribution to become a funder for this campaign"
+                link: "Minimum contribution to become a funder for this campaign"
             },
             {
                 header: campaignSummary.requestsCount,
                 meta: "Number of requests",
-                description: "A request is created by the manager to withdraw money from the contract. Has to be approved by more than 50% of the funders to be able to be paid out."
+                link: "A request is created by the manager to withdraw money from the contract. Has to be approved by more than 50% of the funders to be able to be paid out."
             },
             {
                 header: campaignSummary.contributorsCount,
                 meta: "Number of contributors",
-                description: "Number of addresses that are funders of this campaign. To become a funder you have to contribute at least the minimum contribution amount to the contract."
+                link: "Number of addresses that are funders of this campaign. To become a funder you have to contribute at least the minimum contribution amount to the contract."
             },
             {
                 header: web3.utils.fromWei(campaignSummary.balance ? campaignSummary.balance.toString() : "0", "ether"),
                 meta: "Current balance (ether) of the Contract",
-                description: "Balance of how much ether is locked inside the contract right now."
+                link: "Balance of how much ether is locked inside the contract right now."
             }
         ]
 
@@ -105,7 +119,7 @@ function Show() {
                         />
                         <CardContent>
                             <Typography>
-                                {item.description}
+                                {item.link}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -114,8 +128,8 @@ function Show() {
         })
     }
 
-    function renderRequests() {
-        const items = campaignRequests.map((campaignRequest, index) => {
+    function mapRequests() {
+        return campaignRequests.map((campaignRequest, index) => {
             return {
                 requestIndex: index,
                 description: campaignRequest.description,
@@ -125,53 +139,65 @@ function Show() {
                 complete: campaignRequest.complete
             }
         })
-
-        return items.map(item => {
-            return (
-                <Grid item xs={6} key={item.description}>
-                    <Card key={item.requestIndex + ": " + item.description}>
-                        <CardHeader
-                            title={
-                                <Typography noWrap>
-                                    {item.requestIndex + ": " + item.description}
-                                </Typography>
-                            }
-                            subheader={item.payoutValue + " ether"}
-                        />
-                        <CardContent>
-                            <Typography>
-                                Recipient: {item.recipient}
-                            </Typography>
-                            <Typography>
-                                approvalCount: {item.approvalCount}
-                            </Typography>
-                            <Typography>
-                                complete: {item.complete.toString()}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            )
-        })
     }
 
     return (
         <Box>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Typography variant={"h3"}>Campaign Information</Typography>
+                    <Box textAlign={"center"}>
+                        <Typography variant={"h3"}>{campaignSummary.name}</Typography>
+                    </Box>
                 </Grid>
-                {renderRequestSummary()}
-            </Grid>
-            <Grid container spacing={2}>
+                {renderCampaignSummary()}
+
                 <Grid item xs={12}>
                     <Typography variant={"h3"}>Request Information</Typography>
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell> Request Index </TableCell>
+                                    <TableCell> Description </TableCell>
+                                    <TableCell> Payout Value </TableCell>
+                                    <TableCell> Recipient </TableCell>
+                                    <TableCell> Approval count </TableCell>
+                                    <TableCell>Complete</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {mapRequests().map((row: any) => (
+                                    <TableRow
+                                        key={row.requestIndex}
+                                    >
+                                        <TableCell>
+                                            {row.requestIndex}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.description}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.payoutValue}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.recipient}
+                                        </TableCell>
+                                        <TableCell>
+                                            {`${row.approvalCount} / ${campaignSummary.contributorsCount}`}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.complete || "false"}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
-                {renderRequests()}
             </Grid>
 
-            <Box textAlign={"center"}>
-                <Button variant="contained" startIcon={<Paid/>}
+            <Box textAlign={"center"} margin={"10px"}>
+                <Button variant="contained" startIcon={<img src={ethereumLogo} width={40} alt={""}/>}
                         onClick={() => navigate(APP_CAMPAIGN_INTERACT(campaignSummary.address))}>
                     Interact with Campaign
                 </Button>

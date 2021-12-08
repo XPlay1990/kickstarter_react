@@ -1,21 +1,25 @@
 import React, {useEffect, useState} from "react"
 import Campaign from "../../ethereum/Campaign";
 import campaign from "../../ethereum/Campaign";
-import {Button, CardContent, CardHeader, Divider, Grid, InputAdornment, TextField, Typography} from "@mui/material";
-import Card from "@mui/material/Card";
+import {Grid, InputAdornment, TextField, Typography} from "@mui/material";
 import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
 import LoadingButton from "@mui/lab/LoadingButton";
-import {useParams} from "react-router-dom";
-import {AddCircle, AttachMoney, Paid} from "@mui/icons-material";
+import {useNavigate, useParams} from "react-router-dom";
 
 function Show() {
     const params = useParams();
+    const navigate = useNavigate()
 
     const [campaignSummary, setCampaignSummary] = useState({} as any)
     const [currentUserAddress, setCurrentUserAddress] = useState("")
 
-    const [fundingValue, setFundingValue] = useState("0")
+    const [contributionValue, setContributionValue] = useState("0.0000")
+
+    const [requestDescription, setRequestDescription] = useState("")
+    const [payoutValue, setPayoutValue] = useState("0")
+    const [recipient, setRecipient] = useState("")
+
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
     const [errorState, setErrorState] = React.useState({
@@ -58,8 +62,30 @@ function Show() {
             })
         })
 
-        getCurrentUserAddress().then(userAddresses => setCurrentUserAddress(userAddresses[0]))
+        getCurrentUserAddress().then(userAddresses => {
+            setCurrentUserAddress(userAddresses[0])
+            setRecipient(userAddresses[0])
+        })
     }, [params])
+
+    async function onSubmitRequest(event: any) {
+        event.preventDefault()
+        setIsLoading(true)
+        try {
+            const accounts = await web3.eth.getAccounts()
+            await campaign(campaignSummary.address).methods.createManagerRequest(requestDescription, web3.utils.toWei(payoutValue, "ether"), recipient).send({
+                from: accounts[0]
+            })
+            navigate(`/campaigns/${campaignSummary.address}`)
+        } catch (err) {
+            console.log(err)
+            errorState.errorMessage = "An Error occurred during transaction: " + JSON.stringify(err)
+            setErrorState(errorState)
+            setIsErrorMessageOpen(true)
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     async function onSubmit(event: any) {
         event.preventDefault()
@@ -68,9 +94,9 @@ function Show() {
             const accounts = await web3.eth.getAccounts()
             await campaign(campaignSummary.address).methods.contribute().send({
                 from: accounts[0],
-                value: web3.utils.toWei(fundingValue, "ether")
+                value: web3.utils.toWei(contributionValue, "ether")
             })
-            window.location.reload();
+            navigate(`/campaigns/${campaignSummary.address}`)
         } catch (err) {
             console.log(err)
             errorState.errorMessage = "An Error occurred during transaction: " + JSON.stringify(err)
@@ -84,12 +110,12 @@ function Show() {
     return (
         <Box>
             <Grid container spacing={2}>
-                <Grid item xs={6} display={"flex"} flexDirection={"column"}>
+                <Grid item xs={12} display={"flex"} flexDirection={"column"}>
                     <form onSubmit={onSubmit}
                           style={{display: "flex", flexDirection: "column", width: "50%", margin: "auto"}}>
-                        <Typography variant={"h4"}>Contribute to Campaign</Typography>
+                        <Typography variant={"h4"} margin={2}>Contribute to Campaign</Typography>
 
-                        <TextField inputMode={"decimal"} label={"Funding value"} required
+                        <TextField inputMode={"decimal"} label={"Contribution value"} required
                                    InputProps={{
                                        endAdornment: (
                                            <InputAdornment position="end">
@@ -97,11 +123,11 @@ function Show() {
                                            </InputAdornment>
                                        ),
                                    }}
-                                   value={fundingValue}
-                                   onChange={event => setFundingValue(event.target.value)}
+                                   value={contributionValue}
+                                   onChange={event => setContributionValue(event.target.value)}
                         />
                         <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
-                                       style={{maxWidth: "300px", margin: "5px"}}>
+                                       style={{maxWidth: "300px", marginTop: "5px"}}>
                             Contribute
                         </LoadingButton>
                     </form>
@@ -109,24 +135,42 @@ function Show() {
 
                 {
                     currentUserAddress === campaignSummary.manager ?
-                        <Grid item xs={6} display={"flex"} flexDirection={"column"}>
-                            <form onSubmit={onSubmit}
+                        <Grid item xs={12} display={"flex"} flexDirection={"column"}>
+                            <form onSubmit={onSubmitRequest}
                                   style={{display: "flex", flexDirection: "column", width: "50%", margin: "auto"}}>
-                                <Typography variant={"h4"}>Contribute to Campaign</Typography>
-
-                                <TextField inputMode={"decimal"} label={"Funding value"} required
-                                           InputProps={{
-                                               endAdornment: (
-                                                   <InputAdornment position="end">
-                                                       <Typography>ether</Typography>
-                                                   </InputAdornment>
-                                               ),
-                                           }}
-                                           value={fundingValue}
-                                           onChange={event => setFundingValue(event.target.value)}
-                                />
+                                <Typography variant={"h4"} margin={2}>Create new Request</Typography>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <TextField inputMode={"text"} label={"Request Descr."} required
+                                                   fullWidth={true}
+                                                   value={requestDescription}
+                                                   onChange={event => setRequestDescription(event.target.value)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField inputMode={"decimal"} label={"Payout Value"} required
+                                                   InputProps={{
+                                                       endAdornment: (
+                                                           <InputAdornment position="end">
+                                                               <Typography>ether</Typography>
+                                                           </InputAdornment>
+                                                       ),
+                                                   }}
+                                                   fullWidth={true}
+                                                   value={payoutValue}
+                                                   onChange={event => setPayoutValue(event.target.value)}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField inputMode={"text"} label={"Recipient"} required
+                                                   fullWidth={true}
+                                                   value={recipient}
+                                                   onChange={event => setRecipient(event.target.value)}
+                                        />
+                                    </Grid>
+                                </Grid>
                                 <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
-                                               style={{maxWidth: "300px", margin: "5px"}}>
+                                               style={{maxWidth: "300px", marginTop: "5px"}}>
                                     Create new Request
                                 </LoadingButton>
                             </form>

@@ -4,7 +4,8 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract KickstarterCampaign {
     address public contractManager;
-    uint  public minimumContribution;
+    string public campaignName;
+    uint public minimumContribution;
     mapping(address => uint) public funders;
     uint public fundersCount;
     //    CampaignRequest[] public campaignRequests;
@@ -12,8 +13,9 @@ contract KickstarterCampaign {
     mapping(uint => CampaignRequest) public campaignRequests;
 
 
-    constructor(uint minContribution, address creator){
+    constructor(string memory name, uint minContribution, address creator){
         contractManager = creator;
+        campaignName = name;
         minimumContribution = minContribution;
     }
 
@@ -60,13 +62,14 @@ contract KickstarterCampaign {
         currentRequest.approvalCount++;
     }
 
-    function getSummary() public view returns (uint, uint, uint, uint, address) {
+    function getSummary() public view returns (uint, uint, uint, uint, address, string memory) {
         return (
         minimumContribution,
         address(this).balance,
         numRequests,
         fundersCount,
-        contractManager
+        contractManager,
+        campaignName
         );
     }
 

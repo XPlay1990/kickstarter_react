@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {Alert, Box, IconButton, InputAdornment, Slide, Snackbar, TextField, Typography} from "@mui/material";
+import {Alert, Box, Grid, IconButton, InputAdornment, Slide, Snackbar, TextField, Typography} from "@mui/material";
 import campaignFactory from "../../ethereum/CampaignFactory";
 import web3 from "../../ethereum/web3";
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,6 +10,7 @@ import {APP_PATH_LandingPage} from "../../config/AppConstants";
 function NewCampaign() {
     const navigate = useNavigate()
     const [minimumContribution, setMinimumContribution] = useState("0")
+    const [campaignName, setCampaignName] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
     const [errorState, setErrorState] = React.useState({
@@ -28,7 +29,7 @@ function NewCampaign() {
         setIsLoading(true)
         try {
             const accounts = await web3.eth.getAccounts()
-            await campaignFactory.methods.createCampaign(minimumContribution).send({
+            await campaignFactory.methods.createCampaign(campaignName, minimumContribution).send({
                 from: accounts[0]
             })
 
@@ -45,21 +46,33 @@ function NewCampaign() {
     return (
         <Box>
             <form onSubmit={onSubmit} style={{display: "flex", flexDirection: "column", width: "50%", margin: "auto"}}>
-                <Typography variant={"h2"}>New Campaign</Typography>
+                <Typography variant={"h4"} margin={2}>New Campaign</Typography>
 
-                <TextField inputMode={"decimal"} label={"Minimum Contribution"} required
-                           InputProps={{
-                               endAdornment: (
-                                   <InputAdornment position="end">
-                                       <Typography>wei</Typography>
-                                   </InputAdornment>
-                               ),
-                           }}
-                           value={minimumContribution}
-                           onChange={event => setMinimumContribution(event.target.value)}
-                />
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField inputMode={"text"} label={"Campaign Name"} required
+                                   fullWidth={true}
+                                   value={campaignName}
+                                   onChange={event => setCampaignName(event.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField inputMode={"decimal"} label={"Minimum Contribution"} required
+                                   InputProps={{
+                                       endAdornment: (
+                                           <InputAdornment position="end">
+                                               <Typography>wei</Typography>
+                                           </InputAdornment>
+                                       ),
+                                   }}
+                                   fullWidth={true}
+                                   value={minimumContribution}
+                                   onChange={event => setMinimumContribution(event.target.value)}
+                        />
+                    </Grid>
+                </Grid>
                 <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
-                               style={{maxWidth: "300px", margin: "5px"}}>
+                               style={{maxWidth: "300px", marginTop: "5px"}}>
                     Create
                 </LoadingButton>
             </form>

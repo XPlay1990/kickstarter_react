@@ -1,7 +1,8 @@
 import React, {Dispatch} from 'react'
 import {AppBar, Box, Link, ToggleButton, ToggleButtonGroup, Toolbar, Tooltip, Typography} from "@mui/material";
 import {Brightness3, WbSunny} from "@mui/icons-material";
-import {IS_DARK_MODE} from "../config/AppConstants";
+import {APP_PATH_LandingPage, IS_DARK_MODE} from "../config/AppConstants";
+import {useNavigate} from "react-router-dom";
 
 interface Props {
     isDarkMode: string,
@@ -9,6 +10,7 @@ interface Props {
 }
 
 function Header(props: Props) {
+    const navigate = useNavigate()
 
     function changeDarkMode(event: any, isDarkMode: string) {
         if (isDarkMode) {
@@ -20,7 +22,7 @@ function Header(props: Props) {
     return (
         <AppBar position={"sticky"} style={{marginBottom: "10px", opacity: "0.9"}}>
             <Toolbar>
-                <Link href={"/"}>
+                <Link href="#" onClick={() => navigate(APP_PATH_LandingPage)}>
                     <Typography variant={"h1"} component="h1" fontSize={"smaller"} color={"black"}>
                         CrowdCoin
                     </Typography>

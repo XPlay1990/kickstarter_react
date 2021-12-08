@@ -41,11 +41,11 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}/>
-            <Container>
-                <Paper style={{borderRadius: "10px", minHeight: "70vh", padding: "10px"}}>
-                    <BrowserRouter>
+            <BrowserRouter>
+                <CssBaseline/>
+                <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}/>
+                <Container maxWidth={"xl"}>
+                    <Paper style={{borderRadius: "10px", minHeight: "70vh", padding: "10px"}}>
                         <Routes>
                             <Route path="/" element={<Overview/>}/>
                             <Route path="/campaigns/:address/interact" element={<Interact/>}/>
@@ -54,9 +54,9 @@ function App() {
                             <Route path={FORBIDDEN_URL} element={<Forbidden/>}/>
                             <Route element={<NotFound/>}/>
                         </Routes>
-                    </BrowserRouter>
-                </Paper>
-            </Container>
+                    </Paper>
+                </Container>
+            </BrowserRouter>
         </ThemeProvider>
     )
         ;
