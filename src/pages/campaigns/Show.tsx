@@ -186,7 +186,7 @@ function Show() {
                                             {`${row.approvalCount} / ${campaignSummary.contributorsCount}`}
                                         </TableCell>
                                         <TableCell>
-                                            {row.complete || "false"}
+                                            {row.complete.toString()}
                                         </TableCell>
                                     </TableRow>
                                 ))}

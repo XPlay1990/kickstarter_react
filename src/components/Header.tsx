@@ -23,7 +23,7 @@ function Header(props: Props) {
         <AppBar position={"sticky"} style={{marginBottom: "10px", opacity: "0.9"}}>
             <Toolbar>
                 <Link href="#" onClick={() => navigate(APP_PATH_LandingPage)}>
-                    <Typography variant={"h1"} component="h1" fontSize={"smaller"} color={"black"}>
+                    <Typography variant={"h1"} component="h1" style={{fontSize:"4rem"}} color={"black"}>
                         CrowdCoin
                     </Typography>
                 </Link>
