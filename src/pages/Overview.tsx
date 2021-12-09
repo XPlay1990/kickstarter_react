@@ -42,7 +42,8 @@ function Overview() {
         campaigns.forEach(campaignObject => {
             items.push({
                 header: campaignObject.name,
-                subHeader: campaignObject.address,
+                subHeader: <Link target={"_blank"}
+                                 href={`https://rinkeby.etherscan.io/address/${campaignObject.address}`}>{campaignObject.address}</Link>,
                 link:
                     <Link href="#" onClick={() => navigate(`/campaigns/${campaignObject.address}`)}>
                         View Campaign
@@ -53,7 +54,7 @@ function Overview() {
         return items.map(item => {
             return (
                 <Grid item xs={6}>
-                    <Card key={item.header}>
+                    <Card key={item.header} elevation={3}>
                         <CardHeader
                             title={
                                 item.header
@@ -74,7 +75,7 @@ function Overview() {
     }
 
     return (
-        <Box>
+        <Box display={"flex"} flexDirection={"column"} gap={"5px"}>
             <Typography variant={"h3"} fontSize={"large"}>Open Campaigns</Typography>
             <Grid container spacing={2}>
                 {renderCampaigns()}

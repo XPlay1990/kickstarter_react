@@ -4,7 +4,7 @@ import {
     Button,
     CardContent,
     CardHeader,
-    Grid,
+    Grid, Link,
     Paper,
     Table,
     TableBody,
@@ -70,12 +70,14 @@ function Show() {
 
         const items = [
             {
-                header: campaignSummary.address,
+                header: <Link target={"_blank"}
+                              href={`https://rinkeby.etherscan.io/address/${campaignSummary.address}`}>{campaignSummary.address}</Link>,
                 meta: "Contract address of this Campaign",
                 link: "The address of the contract on the Ethereum network."
             },
             {
-                header: campaignSummary.manager,
+                header: <Link target={"_blank"}
+                              href={`https://rinkeby.etherscan.io/address/${campaignSummary.manager}`}>{campaignSummary.manager}</Link>,
                 meta: "Address of the manager",
                 link: "The manager that created this campaign. Can create Requests and finalize them if enough funders approved."
             },
@@ -104,7 +106,7 @@ function Show() {
         return items.map(item => {
             return (
                 <Grid item xs={6} key={item.header}>
-                    <Card key={item.header} style={{height: "100%"}}>
+                    <Card key={item.header} style={{height: "100%"}} elevation={3}>
                         <CardHeader
                             title={
                                 <Typography noWrap fontWeight={"bold"}>
@@ -142,66 +144,60 @@ function Show() {
     }
 
     return (
-        <Box>
+        <Box display={"flex"} flexDirection={"column"} gap={"10px"} alignItems={"center"}>
+            <Typography variant={"h3"}>{campaignSummary.name}</Typography>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Box textAlign={"center"}>
-                        <Typography variant={"h3"}>{campaignSummary.name}</Typography>
-                    </Box>
-                </Grid>
                 {renderCampaignSummary()}
-
-                <Grid item xs={12}>
-                    <Typography variant={"h3"}>Request Information</Typography>
-                    <TableContainer>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell> Request Index </TableCell>
-                                    <TableCell> Description </TableCell>
-                                    <TableCell> Payout Value </TableCell>
-                                    <TableCell> Recipient </TableCell>
-                                    <TableCell> Approval count </TableCell>
-                                    <TableCell>Complete</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {mapRequests().map((row: any) => (
-                                    <TableRow
-                                        key={row.requestIndex}
-                                    >
-                                        <TableCell>
-                                            {row.requestIndex}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.description}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.payoutValue}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.recipient}
-                                        </TableCell>
-                                        <TableCell>
-                                            {`${row.approvalCount} / ${campaignSummary.contributorsCount}`}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.complete.toString()}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
             </Grid>
 
-            <Box textAlign={"center"} margin={"10px"}>
-                <Button variant="contained" startIcon={<img src={ethereumLogo} width={40} alt={""}/>}
-                        onClick={() => navigate(APP_CAMPAIGN_INTERACT(campaignSummary.address))}>
-                    Interact with Campaign
-                </Button>
-            </Box>
+            <Typography variant={"h3"}>Request Information</Typography>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell> Request Index </TableCell>
+                            <TableCell> Description </TableCell>
+                            <TableCell> Payout Value </TableCell>
+                            <TableCell> Recipient </TableCell>
+                            <TableCell> Approval count </TableCell>
+                            <TableCell>Complete</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {mapRequests().map((row: any) => (
+                            <TableRow
+                                key={row.requestIndex}
+                            >
+                                <TableCell>
+                                    {row.requestIndex}
+                                </TableCell>
+                                <TableCell>
+                                    {row.description}
+                                </TableCell>
+                                <TableCell>
+                                    {row.payoutValue}
+                                </TableCell>
+                                <TableCell>
+                                    <Link target={"_blank"}
+                                          href={`https://rinkeby.etherscan.io/address/${row.recipient}`}>{row.recipient}</Link>
+                                </TableCell>
+                                <TableCell>
+                                    {`${row.approvalCount} / ${campaignSummary.contributorsCount}`}
+                                </TableCell>
+                                <TableCell>
+                                    {row.complete.toString()}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Button variant="contained" startIcon={<img src={ethereumLogo} width={40} alt={""}/>}
+                    onClick={() => navigate(APP_CAMPAIGN_INTERACT(campaignSummary.address))}
+                    style={{maxWidth: "300px"}}>
+                Interact with Campaign
+            </Button>
         </Box>
     )
 }

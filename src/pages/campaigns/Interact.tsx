@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import Campaign from "../../ethereum/Campaign";
 import campaign from "../../ethereum/Campaign";
-import {Grid, InputAdornment, TextField, Typography} from "@mui/material";
+import {Divider, Grid, InputAdornment, TextField, Typography} from "@mui/material";
 import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -108,77 +108,81 @@ function Show() {
     }
 
     return (
-        <Box>
-            <Grid container spacing={2}>
-                <Grid item xs={12} display={"flex"} flexDirection={"column"}>
-                    <form onSubmit={onSubmit}
-                          style={{display: "flex", flexDirection: "column", width: "50%", margin: "auto"}}>
-                        <Typography variant={"h4"} margin={2}>Contribute to Campaign</Typography>
+        <Grid container spacing={2}>
+            <Grid item xs={6}>
+                <form onSubmit={onSubmit}
+                      style={{display: "flex", flexDirection: "column", gap: "10px", margin: "auto"}}>
+                    <Typography variant={"h4"}>Contribute to Campaign</Typography>
 
-                        <TextField inputMode={"decimal"} label={"Contribution value"} required
-                                   InputProps={{
-                                       endAdornment: (
-                                           <InputAdornment position="end">
-                                               <Typography>ether</Typography>
-                                           </InputAdornment>
-                                       ),
-                                   }}
-                                   value={contributionValue}
-                                   onChange={event => setContributionValue(event.target.value)}
-                        />
-                        <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
-                                       style={{maxWidth: "300px", marginTop: "5px"}}>
-                            Contribute
-                        </LoadingButton>
-                    </form>
-                </Grid>
-
-                {
-                    currentUserAddress === campaignSummary.manager ?
-                        <Grid item xs={12} display={"flex"} flexDirection={"column"}>
-                            <form onSubmit={onSubmitRequest}
-                                  style={{display: "flex", flexDirection: "column", width: "50%", margin: "auto"}}>
-                                <Typography variant={"h4"} margin={2}>Create new Request</Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <TextField inputMode={"text"} label={"Request Descr."} required
-                                                   fullWidth={true}
-                                                   value={requestDescription}
-                                                   onChange={event => setRequestDescription(event.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField inputMode={"decimal"} label={"Payout Value"} required
-                                                   InputProps={{
-                                                       endAdornment: (
-                                                           <InputAdornment position="end">
-                                                               <Typography>ether</Typography>
-                                                           </InputAdornment>
-                                                       ),
-                                                   }}
-                                                   fullWidth={true}
-                                                   value={payoutValue}
-                                                   onChange={event => setPayoutValue(event.target.value)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField inputMode={"text"} label={"Recipient"} required
-                                                   fullWidth={true}
-                                                   value={recipient}
-                                                   onChange={event => setRecipient(event.target.value)}
-                                        />
-                                    </Grid>
+                    <TextField inputMode={"decimal"} label={"Contribution value"} required
+                               InputProps={{
+                                   endAdornment: (
+                                       <InputAdornment position="end">
+                                           <Typography>ether</Typography>
+                                       </InputAdornment>
+                                   ),
+                               }}
+                               value={contributionValue}
+                               onChange={event => setContributionValue(event.target.value)}
+                    />
+                    <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
+                                   style={{maxWidth: "300px"}}>
+                        Contribute
+                    </LoadingButton>
+                </form>
+            </Grid>
+            {
+                currentUserAddress === campaignSummary.manager ?
+                    <Grid item xs={6}>
+                        <form onSubmit={onSubmitRequest}
+                              style={{
+                                  margin: "auto",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "10px"
+                              }}>
+                            <Typography variant={"h4"}>Create new Request</Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField inputMode={"text"} label={"Request Descr."} required
+                                               fullWidth={true}
+                                               value={requestDescription}
+                                               onChange={event => setRequestDescription(event.target.value)}
+                                    />
                                 </Grid>
+                                <Grid item xs={6}>
+                                    <TextField inputMode={"decimal"} label={"Payout Value"} required
+                                               InputProps={{
+                                                   endAdornment: (
+                                                       <InputAdornment position="end">
+                                                           <Typography>ether</Typography>
+                                                       </InputAdornment>
+                                                   ),
+                                               }}
+                                               fullWidth={true}
+                                               value={payoutValue}
+                                               onChange={event => setPayoutValue(event.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField inputMode={"text"} label={"Recipient"} required
+                                               fullWidth={true}
+                                               value={recipient}
+                                               onChange={event => setRecipient(event.target.value)}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
-                                               style={{maxWidth: "300px", marginTop: "5px"}}>
+                                               style={{maxWidth: "300px"}}>
                                     Create new Request
                                 </LoadingButton>
-                            </form>
-                        </Grid>
-                        : null
-                }
-            </Grid>
-        </Box>
+                            </Grid>
+                        </form>
+                    </Grid>
+                    : null
+            }
+        </Grid>
     )
 }
 
