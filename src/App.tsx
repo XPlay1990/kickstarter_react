@@ -19,7 +19,10 @@ import {FORBIDDEN_URL, IS_DARK_MODE} from "./config/AppConstants";
 import Forbidden from "./pages/error/Forbidden";
 import Show from "./pages/campaigns/Show";
 import New from "./pages/campaigns/New";
-import Interact from "./pages/campaigns/Interact";
+import Contribute from "./pages/campaigns/interact/Contribute";
+import CreateRequest from "./pages/campaigns/interact/CreateRequest";
+import ApproveRequest from "./pages/campaigns/interact/ApproveRequest";
+import FinalizeRequest from "./pages/campaigns/interact/FinalizeRequest";
 
 function App() {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -46,7 +49,10 @@ function App() {
                         <Paper style={{borderRadius: "10px", minHeight: "75vh", padding: "10px"}}>
                             <Routes>
                                 <Route path="/" element={<Overview/>}/>
-                                <Route path="/campaigns/:address/interact" element={<Interact/>}/>
+                                <Route path="/campaigns/:address/contribute" element={<Contribute/>}/>
+                                <Route path="/campaigns/:address/request/create" element={<CreateRequest/>}/>
+                                <Route path="/campaigns/:address/request/approve" element={<ApproveRequest/>}/>
+                                <Route path="/campaigns/:address/request/finalize" element={<FinalizeRequest/>}/>
                                 <Route path="/campaigns/:address" element={<Show/>}/>
                                 <Route path="/campaigns/new" element={<New/>}/>
                                 <Route path={FORBIDDEN_URL} element={<Forbidden/>}/>

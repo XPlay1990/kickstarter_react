@@ -4,8 +4,8 @@ import {
     Button,
     CardContent,
     CardHeader,
-    Grid, Link,
-    Paper,
+    Grid,
+    Link,
     Table,
     TableBody,
     TableCell,
@@ -18,14 +18,18 @@ import Card from "@mui/material/Card";
 import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
 import {useNavigate, useParams} from "react-router-dom";
-import {APP_CAMPAIGN_INTERACT} from "../../config/AppConstants";
-import ethereumLogo from "../../resources/coin-logos/eth-logo.png"
+import {
+    APP_CAMPAIGN_CONTRIBUTE,
+    APP_CAMPAIGN_REQUEST_APPROVE,
+    APP_CAMPAIGN_REQUEST_CREATE, APP_CAMPAIGN_REQUEST_FINALIZE
+} from "../../config/AppConstants";
 
 function Show() {
     const navigate = useNavigate()
     const params = useParams();
 
     const [campaignSummary, setCampaignSummary] = useState({} as any)
+    const [currentUserAddress, setCurrentUserAddress] = useState("")
     const [campaignRequests, setCampaignRequests] = useState([] as any[])
 
     useEffect(() => {
@@ -45,6 +49,10 @@ function Show() {
             );
         }
 
+        async function getCurrentUserAddress() {
+            return await web3.eth.getAccounts()
+        }
+
         const address = params.address;
         const campaign = Campaign(address)
 
@@ -61,6 +69,10 @@ function Show() {
         })
 
         getAllRequests(campaign).then(requests => setCampaignRequests(requests))
+
+        getCurrentUserAddress().then(userAddresses => {
+            setCurrentUserAddress(userAddresses[0])
+        })
     }, [params])
 
     function renderCampaignSummary() {
@@ -159,8 +171,13 @@ function Show() {
                             <TableCell> Description </TableCell>
                             <TableCell> Payout Value </TableCell>
                             <TableCell> Recipient </TableCell>
-                            <TableCell> Approval count </TableCell>
+                            <TableCell> Approvals / Contributors</TableCell>
+                            <TableCell>Vote</TableCell>
                             <TableCell>Complete</TableCell>
+                            {
+                                currentUserAddress === campaignSummary.manager ?
+                                    <TableCell>Finish Request</TableCell> : null
+                            }
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -185,19 +202,48 @@ function Show() {
                                     {`${row.approvalCount} / ${campaignSummary.contributorsCount}`}
                                 </TableCell>
                                 <TableCell>
+                                    <Button
+                                        variant={"contained"}
+                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_APPROVE(campaignSummary.address))}
+                                    >
+                                        Approve
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
                                     {row.complete.toString()}
                                 </TableCell>
+                                {
+                                    currentUserAddress === campaignSummary.manager ?
+                                        <TableCell>
+                                            <Button
+                                                variant={"contained"}
+                                                onClick={() => navigate(APP_CAMPAIGN_REQUEST_FINALIZE(campaignSummary.address))}
+                                                disabled={(row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete}
+                                            >
+                                                Finalize
+                                            </Button>
+                                        </TableCell> : null
+                                }
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            <Button variant="contained" startIcon={<img src={ethereumLogo} width={40} alt={""}/>}
-                    onClick={() => navigate(APP_CAMPAIGN_INTERACT(campaignSummary.address))}
-                    style={{maxWidth: "300px"}}>
-                Interact with Campaign
-            </Button>
+            <Box display={"flex"} gap={"10px"} alignContent={"center"}>
+                <Button variant="contained" onClick={() => navigate(APP_CAMPAIGN_CONTRIBUTE(campaignSummary.address))}
+                        style={{maxWidth: "300px"}}>
+                    Contribute
+                </Button>
+                {
+                    currentUserAddress === campaignSummary.manager ?
+                        <Button variant="contained"
+                                onClick={() => navigate(APP_CAMPAIGN_REQUEST_CREATE(campaignSummary.address))}
+                                style={{maxWidth: "300px"}}>
+                            Create Request
+                        </Button> : null
+                }
+            </Box>
         </Box>
     )
 }
