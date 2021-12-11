@@ -2,7 +2,7 @@ import React, {Dispatch} from 'react'
 import {
     AppBar,
     Box,
-    Link,
+    Button,
     ToggleButton,
     ToggleButtonGroup,
     Toolbar,
@@ -11,7 +11,7 @@ import {
     useTheme
 } from "@mui/material";
 import {Brightness3, WbSunny} from "@mui/icons-material";
-import {APP_PATH_LandingPage, IS_DARK_MODE} from "../config/AppConstants";
+import {IS_DARK_MODE} from "../config/AppConstants";
 import {useNavigate} from "react-router-dom";
 
 interface Props {
@@ -33,11 +33,12 @@ function Header(props: Props) {
     return (
         <AppBar position={"sticky"} style={{opacity: "0.9"}}>
             <Toolbar>
-                <Link href="#" onClick={() => navigate(APP_PATH_LandingPage)}>
-                    <Typography variant={"h1"} component="h1" style={{fontSize:"2rem"}} color={(theme.palette.mode === 'light') ? "black": "white"}>
+                <Button onClick={() => navigate("/")}>
+                    <Typography variant={"h1"} component="h1" style={{fontSize: "2rem"}}
+                                color={(theme.palette.mode === 'light') ? "black" : "white"}>
                         CrowdCoin
                     </Typography>
-                </Link>
+                </Button>
                 <Box style={{flex: 1, display: "flex", flexDirection: "row-reverse"}}>
                     <Tooltip title={"Switch Darkmode"}>
                         <ToggleButtonGroup

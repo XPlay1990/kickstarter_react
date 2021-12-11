@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {Alert, Box, Grid, IconButton, InputAdornment, Slide, Snackbar, TextField, Typography} from "@mui/material";
+import {Alert, AlertTitle, Box, Collapse, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
 import campaignFactory from "../../ethereum/CampaignFactory";
 import web3 from "../../ethereum/web3";
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,6 +11,7 @@ function NewCampaign() {
     const navigate = useNavigate()
     const [minimumContribution, setMinimumContribution] = useState("0")
     const [campaignName, setCampaignName] = useState("")
+
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
     const [errorState, setErrorState] = React.useState({
@@ -69,26 +70,27 @@ function NewCampaign() {
                 </LoadingButton>
             </form>
 
-            <Snackbar
-                open={isErrorMessageOpen}
-                autoHideDuration={6000}
-                key={"top right"}
-                anchorOrigin={{vertical, horizontal}}
-                TransitionComponent={Slide}
-            >
-                <Alert severity="error" action={
-                    <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                            handleClose()
-                        }}
-                    >
-                        <CloseIcon fontSize="inherit"/>
-                    </IconButton>
-                }>{errorState.errorMessage}</Alert>
-            </Snackbar>
+            <Collapse in={isErrorMessageOpen}>
+                <Alert severity="error"
+                       style={{wordBreak: "break-word"}}
+                       action={
+                           <IconButton
+                               aria-label="close"
+                               color="inherit"
+                               size="medium"
+                               onClick={() => {
+                                   handleClose()
+                               }}
+                           >
+                               <CloseIcon fontSize="inherit"/>
+                           </IconButton>
+                       }
+                >
+                    <AlertTitle>Transaction failed!</AlertTitle>
+                    <br/>
+                    {errorMessage}
+                </Alert>
+            </Collapse>
         </Box>
     )
 }

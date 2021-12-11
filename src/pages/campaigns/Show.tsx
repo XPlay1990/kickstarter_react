@@ -11,7 +11,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
+    TableRow, Tooltip,
     Typography
 } from "@mui/material";
 import Card from "@mui/material/Card";
@@ -204,7 +204,7 @@ function Show() {
                                 <TableCell>
                                     <Button
                                         variant={"contained"}
-                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_APPROVE(campaignSummary.address))}
+                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_APPROVE(campaignSummary.address, row.requestIndex))}
                                     >
                                         Approve
                                     </Button>
@@ -215,13 +215,18 @@ function Show() {
                                 {
                                     currentUserAddress === campaignSummary.manager ?
                                         <TableCell>
-                                            <Button
-                                                variant={"contained"}
-                                                onClick={() => navigate(APP_CAMPAIGN_REQUEST_FINALIZE(campaignSummary.address))}
-                                                disabled={(row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete}
-                                            >
-                                                Finalize
-                                            </Button>
+                                            <Tooltip
+                                                title={((row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete) ? "Already finalized" : "Finalize Request and release payment"}>
+                                                <div>
+                                                    <Button
+                                                        variant={"contained"}
+                                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_FINALIZE(campaignSummary.address, row.requestIndex))}
+                                                        disabled={(row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete}
+                                                    >
+                                                        Finalize
+                                                    </Button>
+                                                </div>
+                                            </Tooltip>
                                         </TableCell> : null
                                 }
                             </TableRow>

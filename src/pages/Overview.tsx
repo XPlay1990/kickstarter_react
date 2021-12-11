@@ -5,6 +5,8 @@ import Card from '@mui/material/Card';
 import {Box, Button, CardContent, CardHeader, Grid, Link, Typography} from "@mui/material";
 import {AddCircle} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
+import {APP_CAMPAIGN_SHOW} from "../config/AppConstants";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function Overview() {
     const navigate = useNavigate()
@@ -45,9 +47,10 @@ function Overview() {
                 subHeader: <Link target={"_blank"}
                                  href={`https://rinkeby.etherscan.io/address/${campaignObject.address}`}>{campaignObject.address}</Link>,
                 link:
-                    <Link href="#" onClick={() => navigate(`/campaigns/${campaignObject.address}`)}>
+                    <Button onClick={() => navigate(APP_CAMPAIGN_SHOW(campaignObject.address))}
+                            endIcon={<ArrowForwardIosIcon/>}>
                         View Campaign
-                    </Link>
+                    </Button>
             })
         })
 
@@ -75,7 +78,7 @@ function Overview() {
     }
 
     return (
-        <Box display={"flex"} flexDirection={"column"} gap={"5px"}>
+        <Box display={"flex"} flexDirection={"column"} gap={"10px"} alignItems={"center"}>
             <Typography variant={"h3"} fontSize={"large"}>Open Campaigns</Typography>
             <Grid container spacing={2}>
                 {renderCampaigns()}

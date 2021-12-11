@@ -39,8 +39,8 @@ contract KickstarterCampaign {
         currentCampaign.complete = false;
     }
 
-    function finalizeManagerRequest(uint campaignID) public restricted {
-        CampaignRequest storage currentRequest = campaignRequests[campaignID];
+    function finalizeManagerRequest(uint requestID) public restricted {
+        CampaignRequest storage currentRequest = campaignRequests[requestID];
 
         require(!currentRequest.complete);
         require(currentRequest.approvalCount > (fundersCount / 2));
@@ -49,11 +49,11 @@ contract KickstarterCampaign {
         currentRequest.complete = true;
     }
 
-    function voteForRequest(uint campaignID) public {
+    function voteForRequest(uint requestID) public {
         //check that sender is funder
         require(funders[msg.sender] > 0);
 
-        CampaignRequest storage currentRequest = campaignRequests[campaignID];
+        CampaignRequest storage currentRequest = campaignRequests[requestID];
 
         //check that sender has not voted for this request before
         require(!(currentRequest.approvalsMapping[msg.sender]));

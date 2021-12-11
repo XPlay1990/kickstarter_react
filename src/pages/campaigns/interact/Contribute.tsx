@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react"
-import {InputAdornment, TextField, Typography} from "@mui/material";
+import {Alert, AlertTitle, Collapse, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {useNavigate, useParams} from "react-router-dom";
 import Campaign from "../../../ethereum/Campaign";
 import web3 from "../../../ethereum/web3";
 import ethereumLogo from "../../../resources/coin-logos/eth-logo.png";
+import CloseIcon from '@mui/icons-material/Close';
 
 function Contribute() {
     const params = useParams();
@@ -21,9 +22,15 @@ function Contribute() {
         horizontal: 'right' as any,
         errorMessage: ""
     });
+    const {vertical, horizontal, errorMessage} = errorState;
+
     useEffect(() => {
 
     }, [params])
+
+    function handleClose() {
+        setIsErrorMessageOpen(false)
+    }
 
     async function onSubmit(event: any) {
         event.preventDefault()
@@ -47,7 +54,7 @@ function Contribute() {
 
     return (
         <form onSubmit={onSubmit}
-              style={{display: "flex", flexDirection: "column", gap: "10px", margin: "auto", width:"50%"}}>
+              style={{display: "flex", flexDirection: "column", gap: "10px", margin: "auto", width: "50%"}}>
             <Typography variant={"h4"}>Contribute to Campaign</Typography>
 
             <TextField inputMode={"decimal"} label={"Contribution value"} required
@@ -66,6 +73,28 @@ function Contribute() {
                            style={{maxWidth: "300px"}}>
                 Contribute
             </LoadingButton>
+
+            <Collapse in={isErrorMessageOpen}>
+                <Alert severity="error"
+                       style={{wordBreak: "break-word"}}
+                       action={
+                           <IconButton
+                               aria-label="close"
+                               color="inherit"
+                               size="medium"
+                               onClick={() => {
+                                   handleClose()
+                               }}
+                           >
+                               <CloseIcon fontSize="inherit"/>
+                           </IconButton>
+                       }
+                >
+                    <AlertTitle>Transaction failed!</AlertTitle>
+                    <br/>
+                    {errorMessage}
+                </Alert>
+            </Collapse>
         </form>
     )
 }
