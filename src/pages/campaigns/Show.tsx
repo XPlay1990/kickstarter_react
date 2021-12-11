@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from "react"
-import Campaign from "../../ethereum/Campaign";
+import React from "react"
 import {
     Button,
     CardContent,
@@ -11,69 +10,24 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Tooltip,
+    TableRow,
+    Tooltip,
     Typography
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import {
     APP_CAMPAIGN_CONTRIBUTE,
     APP_CAMPAIGN_REQUEST_APPROVE,
-    APP_CAMPAIGN_REQUEST_CREATE, APP_CAMPAIGN_REQUEST_FINALIZE
+    APP_CAMPAIGN_REQUEST_CREATE,
+    APP_CAMPAIGN_REQUEST_FINALIZE
 } from "../../config/AppConstants";
 
 function Show() {
     const navigate = useNavigate()
-    const params = useParams();
-
-    const [campaignSummary, setCampaignSummary] = useState({} as any)
-    const [currentUserAddress, setCurrentUserAddress] = useState("")
-    const [campaignRequests, setCampaignRequests] = useState([] as any[])
-
-    useEffect(() => {
-        async function getCampaignSummary(campaign: any) {
-            return await campaign.methods.getSummary().call()
-        }
-
-        async function getAllRequests(campaign: any) {
-            const requestCount = await campaign.methods.getRequestsCount().call();
-
-            return await Promise.all(
-                Array(parseInt(requestCount))
-                    .fill(0)
-                    .map((element, index) => {
-                        return campaign.methods.campaignRequests(index.toString()).call();
-                    })
-            );
-        }
-
-        async function getCurrentUserAddress() {
-            return await web3.eth.getAccounts()
-        }
-
-        const address = params.address;
-        const campaign = Campaign(address)
-
-        getCampaignSummary(campaign).then(summary => {
-            setCampaignSummary({
-                address: campaign.options.address,
-                minimumContribution: summary[0],
-                balance: summary[1],
-                requestsCount: summary[2],
-                contributorsCount: summary[3],
-                manager: summary[4],
-                name: summary[5],
-            })
-        })
-
-        getAllRequests(campaign).then(requests => setCampaignRequests(requests))
-
-        getCurrentUserAddress().then(userAddresses => {
-            setCurrentUserAddress(userAddresses[0])
-        })
-    }, [params])
+    const {campaignSummary, campaignRequests, currentUserAddress} = useOutletContext() as any
 
     function renderCampaignSummary() {
         if (!campaignSummary) {
@@ -115,9 +69,9 @@ function Show() {
             }
         ]
 
-        return items.map(item => {
+        return items.map((item, index) => {
             return (
-                <Grid item xs={6} key={item.header}>
+                <Grid item xs={6} key={index}>
                     <Card key={item.header} style={{height: "100%"}} elevation={3}>
                         <CardHeader
                             title={
@@ -143,16 +97,26 @@ function Show() {
     }
 
     function mapRequests() {
-        return campaignRequests.map((campaignRequest, index) => {
+        return (campaignRequests as any[]).map((campaignRequest, index) => {
             return {
                 requestIndex: index,
                 description: campaignRequest.description,
                 payoutValue: web3.utils.fromWei(campaignRequest.payoutValue, "ether"),
                 recipient: campaignRequest.recipient,
                 approvalCount: campaignRequest.approvalCount,
-                complete: campaignRequest.complete
+                complete: campaignRequest.complete,
             }
         })
+    }
+
+    function getFinalizeTooltip(approvalCount: number, contributorsCount: number, complete: boolean) {
+        if ((approvalCount / campaignSummary.contributorsCount) <= 0.5) {
+            return "Not enough approvals"
+        } else if (complete) {
+            return "Already finalized"
+        } else {
+            return "Finalize Request and release payment"
+        }
     }
 
     return (
@@ -216,7 +180,8 @@ function Show() {
                                     currentUserAddress === campaignSummary.manager ?
                                         <TableCell>
                                             <Tooltip
-                                                title={((row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete) ? "Already finalized" : "Finalize Request and release payment"}>
+                                                title={getFinalizeTooltip(row.approvalCount, row.contributorsCount, row.complete)}
+                                            >
                                                 <div>
                                                     <Button
                                                         variant={"contained"}

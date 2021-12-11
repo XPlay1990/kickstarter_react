@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import './App.css';
 import {
     Box,
@@ -26,6 +26,7 @@ import ApproveRequest from "./pages/campaigns/interact/ApproveRequest";
 import FinalizeRequest from "./pages/campaigns/interact/FinalizeRequest";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import HomeIcon from '@mui/icons-material/Home';
+import CampaignBase from "./pages/campaigns/CampaignBase";
 
 function App() {
     const navigate = useNavigate()
@@ -38,10 +39,6 @@ function App() {
         },
     });
     theme = responsiveFontSizes(theme);
-
-    useEffect(() => {
-        setIsDarkMode(prefersDarkMode.toString())
-    }, [prefersDarkMode])
 
     return (
         <ThemeProvider theme={theme}>
@@ -74,7 +71,7 @@ function App() {
                         </Box>
                         <Routes>
                             <Route path="/" element={<Overview/>}/>
-                            <Route path="/campaigns/:address">
+                            <Route path="/campaigns/:address" element={<CampaignBase/>}>
                                 <Route path="show" element={<Show/>}/>
                                 <Route path="contribute" element={<Contribute/>}/>
                                 <Route path="request/create" element={<CreateRequest/>}/>

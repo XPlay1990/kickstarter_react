@@ -14,12 +14,7 @@ function NewCampaign() {
 
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
-    const [errorState, setErrorState] = React.useState({
-        vertical: 'top' as any,
-        horizontal: 'right' as any,
-        errorMessage: ""
-    });
-    const {vertical, horizontal, errorMessage} = errorState;
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     function handleClose() {
         setIsErrorMessageOpen(false)
@@ -36,8 +31,7 @@ function NewCampaign() {
 
             await navigate(APP_PATH_LandingPage)
         } catch (err) {
-            errorState.errorMessage = "An Error occurred during transaction: " + JSON.stringify(err)
-            setErrorState(errorState)
+            setErrorMessage("An Error occurred during transaction: " + JSON.stringify(err))
             setIsErrorMessageOpen(true)
         } finally {
             setIsLoading(false)

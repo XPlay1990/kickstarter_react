@@ -6,27 +6,19 @@ import Campaign from "../../../ethereum/Campaign";
 import web3 from "../../../ethereum/web3";
 import ethereumLogo from "../../../resources/coin-logos/eth-logo.png";
 import CloseIcon from "@mui/icons-material/Close";
+import {APP_CAMPAIGN_SHOW} from "../../../config/AppConstants";
 
 function FinalizeRequest() {
     const params = useParams();
     const navigate = useNavigate()
 
-    const campaignAddress = params.address
+    const campaignAddress = params.address as string
     const [requestID, setRequestID] = useState(params.id)
 
 
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
-    const [errorState, setErrorState] = React.useState({
-        vertical: 'top' as any,
-        horizontal: 'right' as any,
-        errorMessage: ""
-    });
-    const {vertical, horizontal, errorMessage} = errorState;
-
-    useEffect(() => {
-
-    }, [params])
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     function handleClose() {
         setIsErrorMessageOpen(false)
@@ -40,11 +32,10 @@ function FinalizeRequest() {
             await Campaign(campaignAddress).methods.finalizeManagerRequest(requestID).send({
                 from: accounts[0],
             })
-            navigate(`/campaigns/${campaignAddress}`)
+            navigate(APP_CAMPAIGN_SHOW(campaignAddress))
         } catch (err) {
             console.log(err)
-            errorState.errorMessage = "An Error occurred during transaction: " + JSON.stringify(err)
-            setErrorState(errorState)
+            setErrorMessage("An Error occurred during transaction: " + JSON.stringify(err))
             setIsErrorMessageOpen(true)
         } finally {
             setIsLoading(false)

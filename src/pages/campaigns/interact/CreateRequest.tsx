@@ -1,34 +1,27 @@
 import React, {useEffect, useState} from "react"
 import {Alert, AlertTitle, Collapse, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useOutletContext, useParams} from "react-router-dom";
 import Campaign from "../../../ethereum/Campaign";
 import web3 from "../../../ethereum/web3";
 import ethereumLogo from "../../../resources/coin-logos/eth-logo.png";
 import CloseIcon from '@mui/icons-material/Close';
+import {APP_CAMPAIGN_SHOW} from "../../../config/AppConstants";
 
 function CreateRequest() {
     const params = useParams();
     const navigate = useNavigate()
+    const {campaignSummary} = useOutletContext() as any
 
-    const campaignAddress = params.address
+    const campaignAddress = params.address as string
 
     const [requestDescription, setRequestDescription] = useState("")
     const [payoutValue, setPayoutValue] = useState("0")
-    const [recipient, setRecipient] = useState("")
+    const [recipient, setRecipient] = useState(campaignSummary.manager)
 
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
-    const [errorState, setErrorState] = React.useState({
-        vertical: 'top' as any,
-        horizontal: 'right' as any,
-        errorMessage: ""
-    });
-    const {vertical, horizontal, errorMessage} = errorState;
-
-    useEffect(() => {
-
-    }, [params])
+    const [errorMessage, setErrorMessage] = React.useState("");
 
     function handleClose() {
         setIsErrorMessageOpen(false)
@@ -42,11 +35,10 @@ function CreateRequest() {
             await Campaign(campaignAddress).methods.createManagerRequest(requestDescription, web3.utils.toWei(payoutValue, "ether"), recipient).send({
                 from: accounts[0]
             })
-            navigate(`/campaigns/${campaignAddress}`)
+            navigate(APP_CAMPAIGN_SHOW(campaignAddress))
         } catch (err) {
             console.log(err)
-            errorState.errorMessage = "An Error occurred during transaction: " + JSON.stringify(err)
-            setErrorState(errorState)
+            setErrorMessage("An Error occurred during transaction: " + JSON.stringify(err))
             setIsErrorMessageOpen(true)
         } finally {
             setIsLoading(false)
