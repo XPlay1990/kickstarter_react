@@ -24,6 +24,8 @@ import {
     APP_CAMPAIGN_REQUEST_CREATE,
     APP_CAMPAIGN_REQUEST_FINALIZE
 } from "../../config/AppConstants";
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Show() {
     const navigate = useNavigate()
@@ -174,7 +176,7 @@ function Show() {
                                     </Button>
                                 </TableCell>
                                 <TableCell>
-                                    {row.complete.toString()}
+                                    {row.complete ? <CheckIcon color={"success"}/> : <CloseIcon color={"error"}/>}
                                 </TableCell>
                                 {
                                     currentUserAddress === campaignSummary.manager ?

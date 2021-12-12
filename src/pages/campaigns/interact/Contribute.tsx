@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import {Alert, AlertTitle, Collapse, IconButton, InputAdornment, TextField, Typography} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useOutletContext} from "react-router-dom";
 import Campaign from "../../../ethereum/Campaign";
 import web3 from "../../../ethereum/web3";
 import ethereumLogo from "../../../resources/coin-logos/eth-logo.png";
@@ -9,12 +9,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import {APP_CAMPAIGN_SHOW} from "../../../config/AppConstants";
 
 function Contribute() {
-    const params = useParams();
     const navigate = useNavigate()
 
-    const campaignAddress = params.address as string
-    const [contributionValue, setContributionValue] = useState("0.0000")
+    const {campaignSummary} = useOutletContext() as any
 
+    const campaignAddress = campaignSummary.address
+    const [contributionValue, setContributionValue] = useState(web3.utils.fromWei(campaignSummary.minimumContribution, "ether"))
 
     const [isLoading, setIsLoading] = useState(false)
     const [isErrorMessageOpen, setIsErrorMessageOpen] = useState(false)
@@ -54,7 +54,7 @@ function Contribute() {
                                <InputAdornment position="end">
                                    <Typography>ether</Typography>
                                </InputAdornment>
-                           ),
+                           )
                        }}
                        value={contributionValue}
                        onChange={event => setContributionValue(event.target.value)}

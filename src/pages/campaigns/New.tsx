@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {useNavigate} from 'react-router-dom';
 import {APP_PATH_LandingPage} from "../../config/AppConstants";
+import ethereumLogo from "../../resources/coin-logos/eth-logo.png";
 
 function NewCampaign() {
     const navigate = useNavigate()
@@ -59,6 +60,7 @@ function NewCampaign() {
                            onChange={event => setMinimumContribution(event.target.value)}
                 />
                 <LoadingButton loading={isLoading} type={"submit"} variant={"contained"}
+                               startIcon={<img src={ethereumLogo} width={40} alt={""}/>}
                                style={{maxWidth: "300px"}}>
                     Create
                 </LoadingButton>
