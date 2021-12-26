@@ -86,8 +86,7 @@ function App() {
                 </Container>
             </Box>
         </ThemeProvider>
-    )
-        ;
+    );
 }
 
 export default App;

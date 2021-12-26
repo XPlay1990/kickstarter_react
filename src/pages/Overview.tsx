@@ -85,7 +85,7 @@ function Overview() {
             </Grid>
             <Box display={"flex"} flexDirection={"row-reverse"}>
                 <Link href="#" onClick={() => navigate("/campaigns/New")}>
-                    <Button variant="contained" startIcon={<AddCircle/>}>
+                    <Button variant={"contained"} startIcon={<AddCircle/>}>
                         Create new Campaign
                     </Button>
                 </Link>
