@@ -6,7 +6,7 @@ import Campaign from "../../../ethereum/Campaign";
 import web3 from "../../../ethereum/web3";
 import ethereumLogo from "../../../resources/coin-logos/eth-logo.png";
 import CloseIcon from "@mui/icons-material/Close";
-import {APP_CAMPAIGN_SHOW} from "../../../config/AppConstants";
+import {APP_PATH_CAMPAIGN_SHOW} from "../../../config/AppConstants";
 
 function FinalizeRequest() {
     const params = useParams();
@@ -32,7 +32,7 @@ function FinalizeRequest() {
             await Campaign(campaignAddress).methods.finalizeManagerRequest(requestID).send({
                 from: accounts[0],
             })
-            navigate(APP_CAMPAIGN_SHOW(campaignAddress))
+            navigate(APP_PATH_CAMPAIGN_SHOW(campaignAddress))
         } catch (err) {
             console.log(err)
             setErrorMessage("An Error occurred during transaction: " + JSON.stringify(err))

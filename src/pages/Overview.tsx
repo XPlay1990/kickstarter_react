@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import {Box, Button, CardContent, CardHeader, Grid, Link, Typography} from "@mui/material";
 import {AddCircle} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
-import {APP_CAMPAIGN_SHOW} from "../config/AppConstants";
+import {APP_PATH_CAMPAIGN_SHOW} from "../config/AppConstants";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 function Overview() {
@@ -47,7 +47,7 @@ function Overview() {
                 subHeader: <Link target={"_blank"}
                                  href={`https://rinkeby.etherscan.io/address/${campaignObject.address}`}>{campaignObject.address}</Link>,
                 link:
-                    <Button onClick={() => navigate(APP_CAMPAIGN_SHOW(campaignObject.address))}
+                    <Button onClick={() => navigate(APP_PATH_CAMPAIGN_SHOW(campaignObject.address))}
                             endIcon={<ArrowForwardIosIcon/>}>
                         View Campaign
                     </Button>
@@ -56,8 +56,8 @@ function Overview() {
 
         return items.map(item => {
             return (
-                <Grid item xs={6}>
-                    <Card key={item.header} elevation={3}>
+                <Grid item xs={6} key={item.header}>
+                    <Card elevation={3}>
                         <CardHeader
                             title={
                                 item.header

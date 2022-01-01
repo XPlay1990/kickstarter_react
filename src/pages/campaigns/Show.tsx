@@ -19,10 +19,10 @@ import web3 from "../../ethereum/web3";
 import {Box} from "@mui/system";
 import {useNavigate, useOutletContext} from "react-router-dom";
 import {
-    APP_CAMPAIGN_CONTRIBUTE,
-    APP_CAMPAIGN_REQUEST_APPROVE,
-    APP_CAMPAIGN_REQUEST_CREATE,
-    APP_CAMPAIGN_REQUEST_FINALIZE
+    APP_PATH_CAMPAIGN_CONTRIBUTE,
+    APP_PATH_CAMPAIGN_REQUEST_APPROVE,
+    APP_PATH_CAMPAIGN_REQUEST_CREATE,
+    APP_PATH_CAMPAIGN_REQUEST_FINALIZE
 } from "../../config/AppConstants";
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -170,7 +170,7 @@ function Show() {
                                 <TableCell>
                                     <Button
                                         variant={"contained"}
-                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_APPROVE(campaignSummary.address, row.requestIndex))}
+                                        onClick={() => navigate(APP_PATH_CAMPAIGN_REQUEST_APPROVE(campaignSummary.address, row.requestIndex))}
                                     >
                                         Approve
                                     </Button>
@@ -187,7 +187,7 @@ function Show() {
                                                 <div>
                                                     <Button
                                                         variant={"contained"}
-                                                        onClick={() => navigate(APP_CAMPAIGN_REQUEST_FINALIZE(campaignSummary.address, row.requestIndex))}
+                                                        onClick={() => navigate(APP_PATH_CAMPAIGN_REQUEST_FINALIZE(campaignSummary.address, row.requestIndex))}
                                                         disabled={(row.approvalCount / campaignSummary.contributorsCount) <= 0.5 || row.complete}
                                                     >
                                                         Finalize
@@ -203,14 +203,14 @@ function Show() {
             </TableContainer>
 
             <Box display={"flex"} gap={"10px"} alignContent={"center"}>
-                <Button variant="contained" onClick={() => navigate(APP_CAMPAIGN_CONTRIBUTE(campaignSummary.address))}
+                <Button variant="contained" onClick={() => navigate(APP_PATH_CAMPAIGN_CONTRIBUTE(campaignSummary.address))}
                         style={{maxWidth: "300px"}}>
                     Contribute
                 </Button>
                 {
                     currentUserAddress === campaignSummary.manager ?
                         <Button variant="contained"
-                                onClick={() => navigate(APP_CAMPAIGN_REQUEST_CREATE(campaignSummary.address))}
+                                onClick={() => navigate(APP_PATH_CAMPAIGN_REQUEST_CREATE(campaignSummary.address))}
                                 style={{maxWidth: "300px"}}>
                             Create Request
                         </Button> : null

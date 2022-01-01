@@ -11,7 +11,7 @@ import {
     useTheme
 } from "@mui/material";
 import {Brightness3, WbSunny} from "@mui/icons-material";
-import {IS_DARK_MODE} from "../config/AppConstants";
+import {LOCALSTORAGE_IS_DARK_MODE} from "../config/AppConstants";
 import {useNavigate} from "react-router-dom";
 
 interface Props {
@@ -26,7 +26,7 @@ function Header(props: Props) {
     function changeDarkMode(event: any, isDarkMode: string) {
         if (isDarkMode) {
             props.setIsDarkMode(isDarkMode);
-            localStorage.setItem(IS_DARK_MODE, isDarkMode);
+            localStorage.setItem(LOCALSTORAGE_IS_DARK_MODE, isDarkMode);
         }
     }
 
