@@ -21,7 +21,7 @@ import {
     APP_PATH_FORBIDDEN,
     LOCALSTORAGE_IS_DARK_MODE,
     LOCALSTORAGE_AUTHENTICATION,
-    APP_PATH_LOGIN, APP_PATH_SIGNUP, APP_PATH_REDIRECT
+    APP_PATH_LOGIN, APP_PATH_SIGNUP, APP_PATH_REDIRECT, APP_PATH_PROFILE
 } from "./config/AppConstants";
 import Forbidden from "./pages/error/Forbidden";
 import Show from "./pages/campaigns/Show";
@@ -38,6 +38,7 @@ import FavIcon from './resources/qd_software_logo.png'
 import Login from "./pages/user/login/Login";
 import Signup from "./pages/user/signup/Signup";
 import OAuth2RedirectHandler from "./oauth2/OAuth2RedirectHandler";
+import Profile from "./pages/user/Profile";
 
 function App() {
     const navigate = useNavigate()
@@ -230,6 +231,8 @@ function App() {
 
                             <Route path={APP_PATH_OVERVIEW}
                                    element={isAuthenticated ? <Overview/> : <Navigate to={APP_PATH_LOGIN}/>}/>
+                            <Route path={APP_PATH_PROFILE}
+                                   element={isAuthenticated ? <Profile/> : <Navigate to={APP_PATH_LOGIN}/>}/>
                             <Route path="/campaigns/:address" element={isAuthenticated ? <CampaignBase/> :
                                 <Navigate to={APP_PATH_LOGIN} replace/>}>
                                 <Route path="show"

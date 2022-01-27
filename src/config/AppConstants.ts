@@ -1,5 +1,5 @@
 // export const API_BASE_URL = process.env.API_BASE_URL || process.env.NODE_ENV === 'production' ? 'http://api.qd-software.de' : 'http://localhost:8080'; //'http://ec2-18-184-142-66.eu-central-1.compute.amazonaws.com:9020';
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080'; //'http://ec2-18-184-142-66.eu-central-1.compute.amazonaws.com:9020';
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:9020'//'http://192.168.33.10:8080'; //'http://ec2-18-184-142-66.eu-central-1.compute.amazonaws.com:9020';
 // export const OAUTH2_REDIRECT_URI = process.env.API_BASE_URL || process.env.NODE_ENV === 'production' ? 'https://qd-software.de/oauth2/redirect' : 'http://localhost:3000/oauth2/redirect'
 export const OAUTH2_REDIRECT_URI = process.env.API_BASE_URL || 'http://localhost:3000/oauth2/redirect'
 
@@ -20,6 +20,7 @@ export const APP_PATH_CAMPAIGN_REQUEST = (campaignAddress: string) => `${APP_PAT
 export const APP_PATH_CAMPAIGN_REQUEST_CREATE = (campaignAddress: string) => `${APP_PATH_CAMPAIGN_REQUEST(campaignAddress)}/create`
 export const APP_PATH_CAMPAIGN_REQUEST_APPROVE = (campaignAddress: string, id: number) => `${APP_PATH_CAMPAIGN_REQUEST(campaignAddress)}/${id}/approve`
 export const APP_PATH_CAMPAIGN_REQUEST_FINALIZE = (campaignAddress: string, id: number) => `${APP_PATH_CAMPAIGN_REQUEST(campaignAddress)}/${id}/finalize`
+export const APP_PATH_PROFILE = "/profile"
 export const APP_PATH_FORBIDDEN = "/forbidden"
 
 export const LOCALSTORAGE_IS_DARK_MODE = 'darkMode';
