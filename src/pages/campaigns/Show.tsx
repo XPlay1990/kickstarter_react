@@ -3,7 +3,7 @@ import {
     Button,
     CardContent,
     CardHeader,
-    Grid,
+    Grid, LinearProgress,
     Link,
     Table,
     TableBody,
@@ -32,7 +32,7 @@ function Show() {
     const {campaignSummary, campaignRequests, currentUserAddress} = useOutletContext() as any
 
     function renderCampaignSummary() {
-        if (!campaignSummary) {
+        if (!campaignSummary || !campaignSummary.balance) {
             return null
         }
 
@@ -71,7 +71,7 @@ function Show() {
             }
         ]
 
-        return items.map((item, index) => {
+        const elements = items.map((item, index) => {
             return (
                 <Grid item xs={6} key={index}>
                     <Card key={item.header} style={{height: "100%"}} elevation={3}>
@@ -95,7 +95,42 @@ function Show() {
                     </Card>
                 </Grid>
             )
-        })
+        });
+
+        const fundingPercentage = (parseFloat(web3.utils.fromWei(campaignSummary.balance.toString())) / campaignSummary.fundingGoal) * 100
+
+        elements.unshift(
+            <Grid item xs={12} key={"FundingGoal"}>
+                <Card key={"FundingGoal"} style={{height: "100%"}} elevation={3}>
+                    <CardHeader
+                        title={
+                            <Typography noWrap fontWeight={"bold"}>
+                                {`${web3.utils.fromWei(campaignSummary.balance.toString(), "ether")} of ${campaignSummary.fundingGoal} eth reached`}
+                            </Typography>
+                        }
+                        subheader={
+                            <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                <Box sx={{width: '100%', mr: 1}}>
+                                    <LinearProgress variant="determinate" value={fundingPercentage}/>
+                                </Box>
+                                <Box sx={{minWidth: 35}}>
+                                    <Typography variant="body2" color="text.secondary">{`${Math.round(
+                                        fundingPercentage,
+                                    )}%`}</Typography>
+                                </Box>
+                            </Box>
+                        }
+                    />
+                    <CardContent>
+                        <Typography>
+                            Current funding value of the campaign.
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+        )
+
+        return elements
     }
 
     function mapRequests() {

@@ -6,6 +6,7 @@ contract KickstarterCampaign {
     address public contractManager;
     string public campaignName;
     uint public minimumContribution;
+    uint public fundingGoal;
     mapping(address => uint) public funders;
     uint public fundersCount;
     //    CampaignRequest[] public campaignRequests;
@@ -13,14 +14,15 @@ contract KickstarterCampaign {
     mapping(uint => CampaignRequest) public campaignRequests;
 
 
-    constructor(string memory name, uint minContribution, address creator){
+    constructor(string memory name, uint minContribution, uint fgGoal, address creator){
         contractManager = creator;
         campaignName = name;
         minimumContribution = minContribution;
+        fundingGoal = fgGoal;
     }
 
     function contribute() public payable {
-        require(msg.value > minimumContribution);
+        require(msg.value >= minimumContribution);
 
         if (funders[msg.sender] == 0) {
             fundersCount++;
@@ -62,14 +64,15 @@ contract KickstarterCampaign {
         currentRequest.approvalCount++;
     }
 
-    function getSummary() public view returns (uint, uint, uint, uint, address, string memory) {
+    function getSummary() public view returns (uint, uint, uint, uint, address, string memory, uint) {
         return (
         minimumContribution,
         address(this).balance,
         numRequests,
         fundersCount,
         contractManager,
-        campaignName
+        campaignName,
+        fundingGoal
         );
     }
 

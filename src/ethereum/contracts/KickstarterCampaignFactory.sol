@@ -14,8 +14,8 @@ contract KickstarterCampaignFactory {
         return deployedCampaigns;
     }
 
-    function createCampaign(string memory name, uint minimumContribution) public {
-        address campaignAddress = address(new KickstarterCampaign(name, minimumContribution, msg.sender));
+    function createCampaign(string memory name, uint minimumContribution, uint fundingGoal) public {
+        address campaignAddress = address(new KickstarterCampaign(name, minimumContribution, fundingGoal, msg.sender));
         deployedCampaigns.push(campaignAddress);
     }
 }

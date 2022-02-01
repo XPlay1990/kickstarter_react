@@ -43,6 +43,7 @@ function CampaignBase() {
                 contributorsCount: summary[3],
                 manager: summary[4],
                 name: summary[5],
+                fundingGoal: summary[6]
             })
         })
 

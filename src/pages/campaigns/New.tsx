@@ -10,6 +10,7 @@ import ethereumLogo from "../../resources/coin-logos/eth-logo.png";
 
 function NewCampaign() {
     const navigate = useNavigate()
+    const [fundingGoal, setFundingGoal] = useState("0")
     const [minimumContribution, setMinimumContribution] = useState("0")
     const [campaignName, setCampaignName] = useState("")
 
@@ -26,7 +27,7 @@ function NewCampaign() {
         setIsLoading(true)
         try {
             const accounts = await web3.eth.getAccounts()
-            await campaignFactory.methods.createCampaign(campaignName, minimumContribution).send({
+            await campaignFactory.methods.createCampaign(campaignName, minimumContribution, fundingGoal).send({
                 from: accounts[0]
             })
 
@@ -40,7 +41,7 @@ function NewCampaign() {
     }
 
     return (
-        <Box>
+        <Box width={"70%"}>
             <form onSubmit={onSubmit}
                   style={{display: "flex", flexDirection: "column", gap: "10px", width: "50%", margin: "auto"}}>
                 <Typography variant={"h4"}>New Campaign</Typography>
@@ -48,7 +49,18 @@ function NewCampaign() {
                            value={campaignName}
                            onChange={event => setCampaignName(event.target.value)}
                 />
-                <TextField inputMode={"decimal"} label={"Minimum Contribution"} required
+                <TextField inputMode={"decimal"} type={"number"} label={"fundingGoal"} required
+                           InputProps={{
+                               endAdornment: (
+                                   <InputAdornment position="end">
+                                       <Typography>eth</Typography>
+                                   </InputAdornment>
+                               ),
+                           }}
+                           value={fundingGoal}
+                           onChange={event => setFundingGoal(event.target.value)}
+                />
+                <TextField inputMode={"decimal"} type={"number"} label={"Minimum Contribution"} required
                            InputProps={{
                                endAdornment: (
                                    <InputAdornment position="end">
