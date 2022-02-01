@@ -41,7 +41,7 @@ function NewCampaign() {
     }
 
     return (
-        <Box width={"70%"}>
+        <Box>
             <form onSubmit={onSubmit}
                   style={{display: "flex", flexDirection: "column", gap: "10px", width: "50%", margin: "auto"}}>
                 <Typography variant={"h4"}>New Campaign</Typography>
